@@ -1,145 +1,88 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <termios.h>
-#include <unistd.h>
+// Create a menu with a nested menu (make use of getch function and extended keys)
+#include "stdio.h"
+#include "conio.h"
 
-#define MAXOPTIONS 3
-#define clear() printf("\033[H\033[J")
+/*  CONTROLS
+UP/DOWN --> NAVIGATE
+ENTER   --> SELECT
+Q       --> BACK
 
-// Enter and Esc
-#define ESC 27
-#define ENTER 10
+*/
 
-// colors used in the program
-#define COLOR_RESET   "\033[0m"
-#define COLOR_TEAL    "\033[38;2;0;128;128m"
-#define COLOR_WHITE   "\033[37m"
+#define BLUE "\x1B[34m"
+#define WHITE "\x1B[37m"
+#define RESET "\x1B[0m"
 
-// list items
-char menuOptions[MAXOPTIONS][20] = {
-    "Ahmed",
-    "Essam",
-    "Mohamed"
-};
+#define KEY_UP
 
-typedef enum {
-    KEY_UP,
-    KEY_DOWN,
-    KEY_LEFT,
-    KEY_RIGHT,
-    KEY_ENTER,
-    KEY_ESC,
-    KEY_OTHER
-} KeyType;
+#define MENU_SIZE 3
 
+int main(int argc, char const *argv[])
+{
+    int current_index = 0;
+    char running = 1;
+    char in_sub_menu = 0;
+    while (running)
+    {
+        system("clear");
+        if (!in_sub_menu) // TODO: MAKE A FUNCTION TO GENERATE MENUS
+        {
+            printf("--My Great Menu--\n\n");
+            printf("%s%s%s", current_index == 0 ? BLUE : WHITE, "1) Single Option\n", RESET);
+            printf("%s%s%s", current_index == 1 ? BLUE : WHITE, "2) Menu Option ->\n", RESET);
+            printf("%s%s%s", current_index == 2 ? BLUE : WHITE, "3) Exit\n", RESET);
+        }
+        else
+        {
+            printf("--Sub Menu--\n\n");
+            printf("%s%s%s", current_index == 0 ? BLUE : WHITE, "1) Option 1\n", RESET);
+            printf("%s%s%s", current_index == 1 ? BLUE : WHITE, "2) Option 2\n", RESET);
+            printf("%s%s%s", current_index == 2 ? BLUE : WHITE, "3) Go back\n", RESET);
+        }
 
-KeyType getKey() {
-    int ch = getchar();
+        char firstch = getch(); // read first
+        if (firstch == '\033')
+        {
+            getch(); // skip the ]
 
-    if (ch == ESC) {
-        int next = getchar();
-        if (next == '[') {
-            ch = getchar();
-            switch (ch) {
-                case 'A': return KEY_UP;
-                case 'B': return KEY_DOWN;
-                case 'C': return KEY_RIGHT;
-                case 'D': return KEY_LEFT;
+            char direction = getch(); // read the direction
+            switch (direction)
+            {
+            case 'B': // DOWN
+                current_index = ((current_index == (MENU_SIZE - 1)) ? 0 : (current_index + 1));
+
+                break;
+            case 'A': // UP
+                current_index = ((current_index == 0) ? (MENU_SIZE - 1) : (current_index - 1));
+                break;
             }
         }
-        return KEY_ESC;
-    }
-    else if (ch == ENTER) {
-        return KEY_ENTER;
-    }
+        else if (firstch == 10)
+        {
+            if (!in_sub_menu && current_index == 1)
+            { // go to sub menu
+                in_sub_menu = 1;
+            }
 
-    return KEY_OTHER;
-}
+            if (!in_sub_menu && current_index == 2)
+            {
+                // exit
+                running = 0;
+            }
 
-void initTerminal() {
-    struct termios term;
-    tcgetattr(0, &term);
-    term.c_lflag &= ~(ICANON | ECHO);
-    tcsetattr(0, TCSANOW, &term);
-}
-
-void resetTerminal() {
-    struct termios term;
-    tcgetattr(0, &term);
-    term.c_lflag |= (ICANON | ECHO);
-    tcsetattr(0, TCSANOW, &term);
-}
-
-void showMenu(int selected, int isSelected) {
-    clear();
-
-    if (isSelected) {
-        printf("%s%s%s\n", COLOR_TEAL, menuOptions[selected-1], COLOR_RESET);
-    } else {
-        for (int i = 0; i < MAXOPTIONS; i++) {
-            if (i + 1 == selected) {
-                printf("%s%s%s\n", COLOR_TEAL, menuOptions[i], COLOR_RESET);
-            } else {
-                printf("%s%s%s\n", COLOR_WHITE, menuOptions[i], COLOR_RESET);
+            if (in_sub_menu && current_index == 2)
+            {
+                // go back from sub menu
+                in_sub_menu = 0;
             }
         }
-    }
-    fflush(stdout);
-}
-
-int handleSelectRange(int current) {
-    if (current < 1) return MAXOPTIONS;
-    if (current > MAXOPTIONS) return 1;
-    return current;
-}
-
-int main() {
-    int selected = 1;
-    int isSelected = 0;
-    int running = 1;
-
-    initTerminal();
-    atexit(resetTerminal);
-
-    showMenu(selected, isSelected);
-
-    while (running) {
-        KeyType key = getKey();
-
-        switch (key) {
-            case KEY_UP:
-            case KEY_LEFT:
-                if (!isSelected) {
-                    selected = handleSelectRange(selected - 1);
-                    showMenu(selected, isSelected);
-                }
-                break;
-
-            case KEY_DOWN:
-            case KEY_RIGHT:
-                if (!isSelected) {
-                    selected = handleSelectRange(selected + 1);
-                    showMenu(selected, isSelected);
-                }
-                break;
-
-            case KEY_ENTER:
-                isSelected = 1;
-                showMenu(selected, isSelected);
-                break;
-
-            case KEY_ESC:
-                if (isSelected) {
-                    isSelected = 0;
-                    showMenu(selected, isSelected);
-                } else {
-                    clear();
-                    running = 0;
-                }
-                break;
-
-            default:
-                break;
+        else if(firstch == 113){
+            //Q
+            if(in_sub_menu){
+                in_sub_menu = 0;
+            }else{
+                running = 0;
+            }
         }
     }
 
