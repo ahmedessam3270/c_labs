@@ -39,13 +39,5 @@ int main()
 
     }
 
-
-
-    /*
-    for(int i = 0; i < ROW; i++){
-        for (int j = 0; j < COL; j++){
-            printf("data given %d * %d =  %d \n" , i,j, matrix[0][i*COL+j]);
-        }
-    }*/
     return 0;
 }
