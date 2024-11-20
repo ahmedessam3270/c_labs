@@ -27,14 +27,14 @@ int main()
 
     // to print the sum of each row
     for (int i = 0; i<ROW; i++){
-        int rowSum = 0;
-        int rowAvg = 0;
+        float rowSum = 0;
+        float rowAvg = 0;
         for (int j = 0; j < COL; j++){
             rowSum+= matrix[i][j];
-            rowAvg = (double)(rowSum) / (double)(COL);
+            rowAvg = rowSum / (float)(COL);
         }
-        printf("the sum of the %d row is: %d \n", i+1, rowSum);
-        printf("the Average of the %d row is: %d \n", i+1, rowAvg);
+        printf("the sum of the %d row is: %d \n", i+1, (int)(rowSum));
+        printf("the Average of the %d row is: %.2f \n", i+1, rowAvg);
 
 
     }
