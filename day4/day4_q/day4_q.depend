@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1732020536 source:/media/ahmedessam3270/New Volume/ITI Open Source Data/6-c-programming/labs/day4/day4_q/main.c
+	<stdio.h>
+	<stdlib.h>
+

@@ -16,21 +16,17 @@ int main() {
     printf("Enter numbers (program will exit when sum exceeds 100)\n");
 
     while (sum <= 100) {
-        printf("Current sum: %d\n", sum);
-        printf("Enter a number: ");
 
-        validInput = scanf("%d", &number);
+        //printf("Current sum: %d\n", sum);
+        //printf("Enter a number: ");
+        fflush(stdin);
+        scanf(" %d", &number);
 
-        if (validInput == 1) {
+        if (number > 0 ) {
             sum += number;
 
-            if (sum > 100) {
-                printf("\nSum has exceeded 100!\n");
-                printf("Final sum: %d\n", sum);
-            }
         } else {
             printf("Invalid input. Please enter a number.\n");
-
         }
     }
 
