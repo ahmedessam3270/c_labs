@@ -1,0 +1,17 @@
+# depslib dependency file v1.0
+1732149113 source:/media/ahmedessam3270/New Volume/ITI Open Source Data/6-c-programming/labs/day4/lecture_3_revision/main.c
+	<stdio.h>
+	<termios.h>
+	<unistd.h>
+	"stdio.h"
+	"conio.h"
+	"stdlib.h"
+
+1732016618 /media/ahmedessam3270/New Volume/ITI Open Source Data/6-c-programming/labs/day4/lecture_3_revision/conio.h
+	<termios.h>
+	<unistd.h>
+	<stdio.h>
+	<fcntl.h>
+	<stdlib.h>
+	<string.h>
+
